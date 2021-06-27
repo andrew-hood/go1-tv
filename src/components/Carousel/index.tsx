@@ -1,5 +1,5 @@
 import { View, Card, Heading } from '@go1d/go1d';
-import { useContext, useEffect } from 'react';
+import { useContext, useEffect, useState } from 'react';
 import useIncrementIndex from '../../hooks/useIncrementIndex';
 import useKeyPress from '../../hooks/useKeyPress';
 import { getLoginLink } from '../../services/go1';
@@ -12,11 +12,13 @@ function Carousel({ title, items, onSelected }: { title: string, items: any[], o
     dispatch
   } = useContext(store);
   const [xCursorPosition, setIsEnabled] = useIncrementIndex(['ArrowLeft', 'ArrowRight'], false, 0, items.length);
+  const [hasRendered, setHasRendered] = useState(false);
 
   const width = 180;
 
   useEffect(() => {
     setIsEnabled(onSelected);
+    onSelected && setHasRendered(true);
   }, [onSelected]);
 
   useKeyPress('Enter', () => {
@@ -24,7 +26,6 @@ function Carousel({ title, items, onSelected }: { title: string, items: any[], o
       const id = items[xCursorPosition].node.id;
       const url = `https://${account.portal.url}/play/${id}?exit=0&autoPlay=1`;
       getLoginLink(url, token).then(link => {
-        console.log(link);
         dispatch({type: ActionType.PlayerUpdate, payload: { link }});
       })
     }
@@ -42,19 +43,18 @@ function Carousel({ title, items, onSelected }: { title: string, items: any[], o
         {title}
       </Heading>
       <View 
-        flexDirection="row" 
+        flexDirection="row"
+        height={260}
         css={{ 
-          position: 'relative', 
-          left: -(xCursorPosition * width),
-          transition: 'left linear 0.2s'
+          position: 'relative',
+          transform: `translateX(${-(xCursorPosition * width)}px)`,
+          transition: 'transform ease-out 200ms'
         }}
       >
-        {items.map((item, columnIndex) => (
+        {hasRendered && items.map((item, columnIndex) => (
           <View width={width}>
             <Card
-              css={{
-                transition: 'linear 0.2s'
-              }}
+              css={{ transition: 'borderColor linear 0.2s' }}
               border={2}
               borderColor={(onSelected && columnIndex === xCursorPosition) ? 'contrast' : 'transparent'}
               mode="dark"

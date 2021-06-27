@@ -4,7 +4,7 @@ import { AppProvider } from "./store/store";
 import { ApolloClient, createHttpLink, InMemoryCache, ApolloProvider } from '@apollo/client';
 import { setContext } from '@apollo/client/link/context';
 import { ModalProvider } from "react-modal-hook";
-import { globalCSS } from '@go1d/go1d';
+import { globalCSS, View } from '@go1d/go1d';
 import { useEffect } from 'react';
 
 function App() {
@@ -24,7 +24,7 @@ function App() {
   }, [params]);
 
   const httpLink = createHttpLink({
-    uri: 'https://api.go1.com/v2/graphql/query',
+    uri: process.env.REACT_APP_API_URL + '/graphql/query',
   });
 
   const authLink = setContext((_, { headers }) => {
@@ -47,10 +47,10 @@ function App() {
     <ApolloProvider client={client}>
       <AppProvider values={initialState}>
         <ModalProvider>
-          <div className="App">
+          <View>
             <Player />
             <Drawer />
-          </div>
+          </View>
         </ModalProvider>
       </AppProvider>
     </ApolloProvider>

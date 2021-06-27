@@ -7,13 +7,13 @@ import get from "lodash/get";
 
 const EXCHANGE_RATES = gql`
   query Search {
-    discover(blocks: { type: LearningCarousel, data: TOP_TOPICS, names: ["T1", "T2", "T3", "T4"] }) {
+    discover(blocks: { type: LearningCarousel, data: TOP_TOPICS, names: ["T1", "T2", "T3", "T4", "T5"] }) {
       id,
       blocks {
         ... on LearningCarousel {
           id,
           title,
-          response(first: 10, after: "") {
+          response(first: 12, after: "") {
             pageInfo {
               totalCount
             }
@@ -57,14 +57,15 @@ function Drawer () {
   return content.length > 0 ? (
     <View
       css={{
-        visibility: drawerVisible ? 'visible' : 'hidden',
-        position: 'absolute',
+        position: 'fixed',
         top: 0,
         left: 0,
         right: 0,
         bottom: 0,
+        opacity: drawerVisible ? 1 : 0,
+        visibility: drawerVisible ? 'visible' : 'hidden',
         background: 'linear-gradient(0deg, rgba(33,43,44,1) 15%, rgba(44,61,59,0) 110%)',
-        transition: 'visibility linear 0.2s'
+        transition: 'opacity linear 100ms, visibility linear 0ms 100ms'
       }}
       flexDirection="column-reverse"
       maxHeight="100vh"
@@ -73,8 +74,8 @@ function Drawer () {
         <View 
           css={{
             position: 'relative',
-            top: -(yCursorPosition * (height)),
-            transition: 'top linear 0.2s'
+            transform: `translateY(${-(yCursorPosition * (height))}px)`,
+            transition: 'transform ease-out 250ms'
           }}
         >
           {content.map((item, rowIndex) => {
