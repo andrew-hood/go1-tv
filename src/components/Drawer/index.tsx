@@ -1,6 +1,6 @@
 import { gql, useQuery } from "@apollo/client";
 import { View } from "@go1d/go1d";
-import { useEffect, useState } from "react";
+import React, { useEffect, useState } from "react";
 import useIncrementIndex from "../../hooks/useIncrementIndex";
 import Carousel from "../Carousel";
 import get from "lodash/get";
@@ -35,6 +35,8 @@ const EXCHANGE_RATES = gql`
   }
 `;
 
+const MemoCarousel = React.memo(Carousel);
+
 function Drawer () {
   const { loading, error, data } = useQuery(EXCHANGE_RATES);
   const [content, setContent] = useState([]);
@@ -65,7 +67,7 @@ function Drawer () {
         opacity: drawerVisible ? 1 : 0,
         visibility: drawerVisible ? 'visible' : 'hidden',
         background: 'linear-gradient(0deg, rgba(33,43,44,1) 15%, rgba(44,61,59,0) 110%)',
-        transition: 'opacity linear 100ms, visibility linear 0ms 100ms'
+        transition: 'opacity ease-in-out 100ms, visibility ease-in-out 0ms 100ms',
       }}
       flexDirection="column-reverse"
       maxHeight="100vh"
@@ -75,19 +77,18 @@ function Drawer () {
           css={{
             position: 'relative',
             transform: `translateY(${-(yCursorPosition * (height))}px)`,
-            transition: 'transform ease-out 250ms'
+            transition: 'transform ease-in-out 250ms',
+            willChange: 'transform',
           }}
         >
-          {content.map((item, rowIndex) => {
-            return (
-              <Carousel
-                key={rowIndex}
-                title={get(item, 'title', '')}
-                items={get(item, 'response.edges', [])}
-                onSelected={rowIndex === yCursorPosition}
-              />
-            )
-          })}
+          {content.map((item, rowIndex) => (
+            <MemoCarousel
+              key={rowIndex}
+              title={get(item, 'title', '')}
+              items={get(item, 'response.edges', [])}
+              onSelected={rowIndex === yCursorPosition}
+            />
+          ))}
         </View>
       </View>
     </View>

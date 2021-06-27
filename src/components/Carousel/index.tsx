@@ -48,13 +48,13 @@ function Carousel({ title, items, onSelected }: { title: string, items: any[], o
         css={{ 
           position: 'relative',
           transform: `translateX(${-(xCursorPosition * width)}px)`,
-          transition: 'transform ease-out 200ms'
+          transition: 'transform ease-in-out 250ms',
+          willChange: 'transform'
         }}
       >
         {hasRendered && items.map((item, columnIndex) => (
           <View width={width}>
             <Card
-              css={{ transition: 'borderColor linear 0.2s' }}
               border={2}
               borderColor={(onSelected && columnIndex === xCursorPosition) ? 'contrast' : 'transparent'}
               mode="dark"
