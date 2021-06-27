@@ -36,7 +36,7 @@ function Player() {
         <View flexGrow={1} padding={7} alignItems="center">
           <IconGo1Logo size={10} color="accent" />
           <View flexGrow={1} />
-          <ButtonFilled color="complementary" href="https://auth.go1.com/oauth/authorize?response_type=token&client_id=60553336900dd07cb05d3e8d41eb1e2253d3fbf1&redirect_uri=http://localhost:3000/&scope=user.read user.write user.login.me account.read lo.read enrollment.read enrollment.write">Login to your Go1 account</ButtonFilled>
+          <ButtonFilled color="complementary" href="https://auth.go1.com/oauth/authorize?response_type=token&client_id=60553336900dd07cb05d3e8d41eb1e2253d3fbf1&redirect_uri=https://go1-tv-app.onrender.com/&scope=user.read user.write user.login.me account.read lo.read enrollment.read enrollment.write">Login to your Go1 account</ButtonFilled>
         </View>
       </View>
     </Modal>
