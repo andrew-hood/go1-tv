@@ -1,25 +1,59 @@
-import React from 'react';
-import logo from './logo.svg';
-import './App.css';
+import Player from './components/Player';
+import Drawer from './components/Drawer';
+import { AppProvider } from "./store/store";
+import { ApolloClient, createHttpLink, InMemoryCache, ApolloProvider } from '@apollo/client';
+import { setContext } from '@apollo/client/link/context';
+import { ModalProvider } from "react-modal-hook";
+import { globalCSS } from '@go1d/go1d';
+import { useEffect } from 'react';
 
 function App() {
+  globalCSS();
+
+  const params = new URLSearchParams(window.location.hash.substr(1));
+  const initialState = {
+    token: params.get('access_token') as string,
+    player: {
+      url: ''
+    },
+    account: null,
+  };
+
+  useEffect(() => {
+    window.localStorage.setItem('token', params.get('access_token') as string);
+  }, [params]);
+
+  const httpLink = createHttpLink({
+    uri: 'https://api.go1.com/v2/graphql/query',
+  });
+
+  const authLink = setContext((_, { headers }) => {
+    const params = new URLSearchParams(window.location.hash.substr(1));
+    const token = params.get('access_token') || localStorage.getItem('token');
+    return {
+      headers: {
+        ...headers,
+        authorization: token ? `Bearer ${token}` : "",
+      }
+    }
+  });
+
+  const client = new ApolloClient({
+    link: authLink.concat(httpLink),
+    cache: new InMemoryCache(),
+  });
+
   return (
-    <div className="App">
-      <header className="App-header">
-        <img src={logo} className="App-logo" alt="logo" />
-        <p>
-          Edit <code>src/App.tsx</code> and save to reload.
-        </p>
-        <a
-          className="App-link"
-          href="https://reactjs.org"
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          Learn React
-        </a>
-      </header>
-    </div>
+    <ApolloProvider client={client}>
+      <AppProvider values={initialState}>
+        <ModalProvider>
+          <div className="App">
+            <Player />
+            <Drawer />
+          </div>
+        </ModalProvider>
+      </AppProvider>
+    </ApolloProvider>
   );
 }
 
