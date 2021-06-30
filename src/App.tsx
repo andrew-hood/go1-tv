@@ -1,11 +1,14 @@
 import Player from './components/Player';
-import Drawer from './components/Drawer';
 import { AppProvider } from "./store/store";
 import { ApolloClient, createHttpLink, InMemoryCache, ApolloProvider } from '@apollo/client';
 import { setContext } from '@apollo/client/link/context';
 import { ModalProvider } from "react-modal-hook";
-import { globalCSS, View } from '@go1d/go1d';
+import { globalCSS } from '@go1d/go1d';
 import { useEffect } from 'react';
+import Layout from './components/common/Layout';
+import Catalog from './components/Catalog';
+import IconVideoplay from '@go1d/go1d/build/components/Icons/Videoplay';
+import IconList from '@go1d/go1d/build/components/Icons/List';
 
 function App() {
   globalCSS();
@@ -47,10 +50,12 @@ function App() {
     <ApolloProvider client={client}>
       <AppProvider values={initialState}>
         <ModalProvider>
-          <View>
-            <Player />
-            <Drawer />
-          </View>
+          <Layout
+            items={[
+              { icon: IconVideoplay, onRender: <Player /> },
+              { icon: IconList, onRender: <Catalog /> },
+            ]}
+          />
         </ModalProvider>
       </AppProvider>
     </ApolloProvider>
